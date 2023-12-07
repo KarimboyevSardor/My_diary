@@ -5,12 +5,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.mydiary.databinding.FragmentFoldersBinding
+import com.example.mydiary.databinding.FragmentAddEditDiaryBinding
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-class Folders : Fragment() {
+class AddEditDiary : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
@@ -22,18 +22,29 @@ class Folders : Fragment() {
         }
     }
 
-    private var binding: FragmentFoldersBinding? = null
+    private var binding: FragmentAddEditDiaryBinding? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View {
-        binding = FragmentFoldersBinding.inflate(inflater, container, false)
+    ): View? {
+        binding = FragmentAddEditDiaryBinding.inflate(inflater, container, false)
 
         binding!!.apply {
 
         }
 
-        return binding!!.root
+        return binding?.root
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(param1: String, param2: String) =
+            AddEditDiary().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_PARAM1, param1)
+                    putString(ARG_PARAM2, param2)
+                }
+            }
     }
 
     override fun onDestroyView() {
@@ -41,14 +52,4 @@ class Folders : Fragment() {
         binding = null
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            Folders().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
 }

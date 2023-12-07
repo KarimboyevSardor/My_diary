@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/main">
+
+    <fragment
+        android:id="@+id/main"
+        android:name="com.example.mydiary.fragments.Main"
+        android:label="fragment_main"
+        tools:layout="@layout/fragment_main" >
+        <action
+            android:id="@+id/action_main_to_addEditDiary"
+            app:destination="@id/addEditDiary" />
+        <action
+            android:id="@+id/action_main_to_folders"
+            app:destination="@id/folders" />
+    </fragment>
+    <fragment
+        android:id="@+id/addEditDiary"
+        android:name="com.example.mydiary.fragments.AddEditDiary"
+        android:label="fragment_add_edit_diary"
+        tools:layout="@layout/fragment_add_edit_diary" >
+        <action
+            android:id="@+id/action_addEditDiary_to_main"
+            app:destination="@id/main" />
+    </fragment>
+    <fragment
+        android:id="@+id/folders"
+        android:name="com.example.mydiary.fragments.Folders"
+        android:label="fragment_folders"
+        tools:layout="@layout/fragment_folders" >
+        <action
+            android:id="@+id/action_folders_to_main"
+            app:destination="@id/main" />
+        <action
+            android:id="@+id/action_folders_to_delete"
+            app:destination="@id/delete" />
+    </fragment>
+    <fragment
+        android:id="@+id/delete"
+        android:name="com.example.mydiary.fragments.Delete"
+        android:label="fragment_delete"
+        tools:layout="@layout/fragment_delete" >
+        <action
+            android:id="@+id/action_delete_to_folders"
+            app:destination="@id/folders" />
+    </fragment>
+</navigation>
