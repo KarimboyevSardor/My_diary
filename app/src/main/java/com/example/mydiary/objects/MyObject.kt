@@ -1,9 +1,9 @@
 package com.example.mydiary.objects
 
 import com.example.mydiary.models.Diary
-import com.example.mydiary.models.Pack
+import com.example.mydiary.models.Folder
 
 object MyObject {
     var diaryList = mutableListOf<Diary>()
-    var packNameList = mutableListOf<Pack>()
+    var folderNameList = mutableListOf<Folder>()
 }

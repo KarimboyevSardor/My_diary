@@ -5,7 +5,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.example.mydiary.models.Diary
-import com.example.mydiary.models.Pack
+import com.example.mydiary.models.Folder
 
 class MyDb(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) , DbService{
     companion object {
@@ -20,18 +20,18 @@ class MyDb(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSI
         const val DIARY_DELETED = "deleted"
         const val DIARY_FAVORITE = "favorite"
         const val DIARY_DELETED_TIME = "deleted_time"
-        const val DIARY_PACK_NAME = "pack_name"
+        const val DIARY_FOLDER_NAME = "folder_name"
 
-        //TODO: PACK TABLE
-        const val TABLE_PACK = "packs"
-        const val PACK_NAME = "name"
-        const val PACK_DELETED = "deleted"
+        //TODO: FOLDER TABLE
+        const val TABLE_FOLDERS = "folders"
+        const val FOLDER_NAME = "name"
+        const val FOLDER_DELETED = "deleted"
     }
     override fun onCreate(db: SQLiteDatabase?) {
         val diaryQuery = "CREATE TABLE $TABLE_DIARY($ID INTEGER NOT NULL, $DIARY_NAME TEXT NOT NULL, $DIARY_ABOUT TEXT NOT NULL, " +
                 "$DIARY_DELETED INTEGER NOT NULL, $DIARY_FAVORITE INTEGER NOT NULL, $DIARY_DELETED_TIME TEXT NOT NULL, " +
-                "$DIARY_PACK_NAME TEXT NOT NULL)"
-        val packQuery = "CREATE TABLE $TABLE_PACK($ID INTEGER NOT NULL, $PACK_NAME TEXT NOT NULL, $PACK_DELETED INTEGER NOT NULL)"
+                "$DIARY_FOLDER_NAME TEXT NOT NULL)"
+        val packQuery = "CREATE TABLE $TABLE_FOLDERS($ID INTEGER NOT NULL, $FOLDER_NAME TEXT NOT NULL, $FOLDER_DELETED INTEGER NOT NULL)"
         db?.execSQL(diaryQuery)
         db?.execSQL(packQuery)
     }
@@ -65,7 +65,7 @@ class MyDb(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSI
         content.put(DIARY_DELETED, diary.deleted)
         content.put(DIARY_DELETED_TIME, diary.deleted_time)
         content.put(DIARY_FAVORITE, diary.favorite)
-        content.put(DIARY_PACK_NAME, diary.pack_name)
+        content.put(DIARY_FOLDER_NAME, diary.pack_name)
         this.writableDatabase.insert(TABLE_DIARY, null, content)
     }
 
@@ -76,48 +76,48 @@ class MyDb(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSI
         content.put(DIARY_DELETED, diary.deleted)
         content.put(DIARY_DELETED_TIME, diary.deleted_time)
         content.put(DIARY_FAVORITE, diary.favorite)
-        content.put(DIARY_PACK_NAME, diary.pack_name)
+        content.put(DIARY_FOLDER_NAME, diary.pack_name)
         this.writableDatabase.update(TABLE_DIARY, content, "$ID = ?", arrayOf(diary.id.toString()))
     }
 
     override fun deletedDiary(diary: Diary) {
-        this.writableDatabase.delete(TABLE_DIARY, "$DIARY_PACK_NAME = ?", arrayOf(diary.pack_name))
+        this.writableDatabase.delete(TABLE_DIARY, "$DIARY_FOLDER_NAME = ?", arrayOf(diary.pack_name))
     }
 
-    override fun getPack(): MutableList<Pack> {
-        val packList = mutableListOf<Pack>()
-        val cursor = this.readableDatabase.rawQuery("SELECT * FROM $TABLE_PACK", null)
+    override fun getPack(): MutableList<Folder> {
+        val folderList = mutableListOf<Folder>()
+        val cursor = this.readableDatabase.rawQuery("SELECT * FROM $TABLE_FOLDERS", null)
         if (cursor.moveToFirst()) {
             do {
                 val id = cursor.getInt(0)
                 val name = cursor.getString(1)
                 val delete = cursor.getInt(2)
-                packList.add(Pack(id, name, delete))
+                folderList.add(Folder(id, name, delete))
             } while (cursor.moveToNext())
         }
-        return packList
+        return folderList
     }
 
-    override fun addPack(pack: Pack) {
+    override fun addPack(folder: Folder) {
         val content = ContentValues()
-        content.put(PACK_NAME, pack.name)
-        content.put(PACK_DELETED, pack.deleted)
-        this.writableDatabase.insert(TABLE_PACK, null, content)
+        content.put(FOLDER_NAME, folder.name)
+        content.put(FOLDER_DELETED, folder.deleted)
+        this.writableDatabase.insert(TABLE_FOLDERS, null, content)
     }
 
-    override fun updatePack(pack: Pack, oldName: String) {
+    override fun updatePack(folder: Folder, oldName: String) {
         val content = ContentValues()
-        content.put(PACK_NAME, pack.name)
-        content.put(PACK_DELETED, pack.deleted)
+        content.put(FOLDER_NAME, folder.name)
+        content.put(FOLDER_DELETED, folder.deleted)
         val contentValues = ContentValues()
-        contentValues.put(DIARY_PACK_NAME, pack.name)
-        this.writableDatabase.update(TABLE_DIARY, contentValues, "$DIARY_PACK_NAME = ?", arrayOf(oldName))
-        this.writableDatabase.update(TABLE_PACK, content, "$ID = ?", arrayOf(pack.id.toString()))
+        contentValues.put(DIARY_FOLDER_NAME, folder.name)
+        this.writableDatabase.update(TABLE_DIARY, contentValues, "$DIARY_FOLDER_NAME = ?", arrayOf(oldName))
+        this.writableDatabase.update(TABLE_FOLDERS, content, "$ID = ?", arrayOf(folder.id.toString()))
     }
 
-    override fun deletePack(pack: Pack) {
-        this.writableDatabase.delete(TABLE_DIARY, "$DIARY_PACK_NAME = ?", arrayOf(pack.name))
-        this.writableDatabase.delete(TABLE_PACK, "$PACK_NAME = ?", arrayOf(pack.name))
+    override fun deletePack(folder: Folder) {
+        this.writableDatabase.delete(TABLE_DIARY, "$DIARY_FOLDER_NAME = ?", arrayOf(folder.name))
+        this.writableDatabase.delete(TABLE_FOLDERS, "$FOLDER_NAME = ?", arrayOf(folder.name))
     }
 
 }

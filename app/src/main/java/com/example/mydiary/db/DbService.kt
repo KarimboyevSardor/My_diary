@@ -1,7 +1,7 @@
 package com.example.mydiary.db
 
 import com.example.mydiary.models.Diary
-import com.example.mydiary.models.Pack
+import com.example.mydiary.models.Folder
 
 interface DbService {
     //TODO: DIARY
@@ -14,12 +14,12 @@ interface DbService {
     fun deletedDiary(diary: Diary)
 
     //TODO: PACK
-    fun getPack() : MutableList<Pack>
+    fun getPack() : MutableList<Folder>
 
-    fun addPack(pack: Pack)
+    fun addPack(folder: Folder)
 
-    fun updatePack(pack: Pack, oldName: String)
+    fun updatePack(folder: Folder, oldName: String)
 
-    fun deletePack(pack: Pack)
+    fun deletePack(folder: Folder)
 
 }
