@@ -4,9 +4,8 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import com.example.mydiary.objects.Diary
-import com.example.mydiary.objects.Pack
-import java.net.IDN
+import com.example.mydiary.models.Diary
+import com.example.mydiary.models.Pack
 
 class MyDb(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) , DbService{
     companion object {
@@ -110,11 +109,15 @@ class MyDb(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSI
         val content = ContentValues()
         content.put(PACK_NAME, pack.name)
         content.put(PACK_DELETED, pack.deleted)
+        val contentValues = ContentValues()
+        contentValues.put(DIARY_PACK_NAME, pack.name)
+        this.writableDatabase.update(TABLE_DIARY, contentValues, "$DIARY_PACK_NAME = ?", arrayOf(oldName))
         this.writableDatabase.update(TABLE_PACK, content, "$ID = ?", arrayOf(pack.id.toString()))
     }
 
     override fun deletePack(pack: Pack) {
-
+        this.writableDatabase.delete(TABLE_DIARY, "$DIARY_PACK_NAME = ?", arrayOf(pack.name))
+        this.writableDatabase.delete(TABLE_PACK, "$PACK_NAME = ?", arrayOf(pack.name))
     }
 
 }

@@ -1,7 +1,7 @@
 package com.example.mydiary.db
 
-import com.example.mydiary.objects.Diary
-import com.example.mydiary.objects.Pack
+import com.example.mydiary.models.Diary
+import com.example.mydiary.models.Pack
 
 interface DbService {
     //TODO: DIARY

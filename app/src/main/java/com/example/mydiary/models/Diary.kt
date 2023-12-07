@@ -1,4 +1,4 @@
-package com.example.mydiary.objects
+package com.example.mydiary.models
 
 data class Diary(
     var id: Int = 0,
