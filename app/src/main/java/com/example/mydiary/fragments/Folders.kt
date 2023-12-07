@@ -23,10 +23,7 @@ class Folders : Fragment() {
     }
 
     private var binding: FragmentFoldersBinding? = null
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentFoldersBinding.inflate(inflater, container, false)
 
         binding!!.apply {

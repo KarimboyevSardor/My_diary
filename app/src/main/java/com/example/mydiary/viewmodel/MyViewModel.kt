@@ -7,22 +7,22 @@ import com.example.mydiary.models.Folder
 import com.example.mydiary.objects.MyObject.diaryList
 import com.example.mydiary.objects.MyObject.folderNameList
 
-class MyViewModel : ViewModel(){
-    var diaryLiveData: MutableLiveData<MutableList<Diary>>? = null
-    var folderNameLiveData: MutableLiveData<MutableList<Folder>>? = null
+class MyViewModel : ViewModel() {
+    private var diaryLiveData: MutableLiveData<MutableList<Diary>>? = null
+    private var folderNameLiveData: MutableLiveData<MutableList<Folder>>? = null
 
     init {
         diaryLiveData = MutableLiveData()
-        diaryLiveData!!.value = diaryList
+        diaryLiveData?.value = diaryList
         folderNameLiveData = MutableLiveData()
-        folderNameLiveData!!.value = folderNameList
+        folderNameLiveData?.value = folderNameList
     }
 
-    fun getDiaryLiveData() : MutableLiveData<MutableList<Diary>>? {
+    fun getDiary() : MutableLiveData<MutableList<Diary>>? {
         return diaryLiveData!!
     }
 
-    fun getPackNameLiveData() : MutableLiveData<MutableList<Folder>>? {
+    fun getPackName() : MutableLiveData<MutableList<Folder>>? {
         return folderNameLiveData!!
     }
 }

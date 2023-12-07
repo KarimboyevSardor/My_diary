@@ -4,6 +4,8 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
+import android.widget.Toast
 import com.example.mydiary.models.Diary
 import com.example.mydiary.models.Folder
 
@@ -28,10 +30,10 @@ class MyDb(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSI
         const val FOLDER_DELETED = "deleted"
     }
     override fun onCreate(db: SQLiteDatabase?) {
-        val diaryQuery = "CREATE TABLE $TABLE_DIARY($ID INTEGER NOT NULL, $DIARY_NAME TEXT NOT NULL, $DIARY_ABOUT TEXT NOT NULL, " +
+        val diaryQuery = "CREATE TABLE $TABLE_DIARY($ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, $DIARY_NAME TEXT NOT NULL, $DIARY_ABOUT TEXT NOT NULL, " +
                 "$DIARY_DELETED INTEGER NOT NULL, $DIARY_FAVORITE INTEGER NOT NULL, $DIARY_DELETED_TIME TEXT NOT NULL, " +
                 "$DIARY_FOLDER_NAME TEXT NOT NULL)"
-        val packQuery = "CREATE TABLE $TABLE_FOLDERS($ID INTEGER NOT NULL, $FOLDER_NAME TEXT NOT NULL, $FOLDER_DELETED INTEGER NOT NULL)"
+        val packQuery = "CREATE TABLE $TABLE_FOLDERS($ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, $FOLDER_NAME TEXT NOT NULL, $FOLDER_DELETED INTEGER NOT NULL)"
         db?.execSQL(diaryQuery)
         db?.execSQL(packQuery)
     }

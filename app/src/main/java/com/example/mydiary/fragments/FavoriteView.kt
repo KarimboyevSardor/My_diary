@@ -5,7 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.mydiary.databinding.FragmentFavoriteBinding
+import androidx.navigation.fragment.findNavController
+import com.example.mydiary.R
+import com.example.mydiary.adapters.DiaryAdapter
+import com.example.mydiary.databinding.FragmentFavoriteViewBinding
+import com.example.mydiary.models.Diary
+import com.example.mydiary.objects.MyObject.diaryList
+import com.example.mydiary.objects.MyObject.getViewModel
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -22,15 +28,29 @@ class FavoriteView : Fragment() {
         }
     }
 
-    private var binding: FragmentFavoriteBinding? = null
+    private var binding: FragmentFavoriteViewBinding? = null
+    lateinit var diaryAdapter: DiaryAdapter
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        binding = FragmentFavoriteBinding.inflate(inflater, container, false)
+        binding = FragmentFavoriteViewBinding.inflate(inflater, container, false)
 
         binding!!.apply {
-
+            val viewModel = getViewModel(requireActivity())
+            diaryAdapter = DiaryAdapter(diaryList.filter { it.favorite == 1 } as MutableList<Diary>, object : DiaryAdapter.onClick{
+                override fun onItemClick(diary: Diary) {
+                    val fm = AddEditDiary()
+                    val bundle = Bundle()
+                    bundle.putParcelable("diary", diary)
+                    fm.arguments = bundle
+                    findNavController().navigate(R.id.action_main_to_addEditDiary, bundle)
+                }
+            })
+            favoriteDiaryRec.adapter = diaryAdapter
+            viewModel.getDiary()!!.observe(requireActivity()) { it ->
+                diaryAdapter.filter(it.filter { it.favorite == 1 } as MutableList<Diary>)
+            }
         }
 
         return binding?.root
