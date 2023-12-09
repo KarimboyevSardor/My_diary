@@ -36,6 +36,7 @@ class MyDb(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSI
         val packQuery = "CREATE TABLE $TABLE_FOLDERS($ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, $FOLDER_NAME TEXT NOT NULL, $FOLDER_DELETED INTEGER NOT NULL)"
         db?.execSQL(diaryQuery)
         db?.execSQL(packQuery)
+        db?.execSQL("INSERT INTO $TABLE_FOLDERS($FOLDER_NAME, $FOLDER_DELETED) VALUES (\"All\",${0})")
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
@@ -83,7 +84,7 @@ class MyDb(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSI
     }
 
     override fun deletedDiary(diary: Diary) {
-        this.writableDatabase.delete(TABLE_DIARY, "$DIARY_FOLDER_NAME = ?", arrayOf(diary.pack_name))
+        this.writableDatabase.delete(TABLE_DIARY, "$ID = ?", arrayOf(diary.id.toString()))
     }
 
     override fun getPack(): MutableList<Folder> {

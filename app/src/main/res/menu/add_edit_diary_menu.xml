@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item android:id="@+id/background" android:icon="@drawable/wallpaper_fill0_wght400_grad0_opsz24" android:title="Background" app:showAsAction="always"/>
-    <item android:id="@+id/delete" android:icon="@drawable/delete_fill0_wght400_grad0_opsz24" android:title="Delete" app:showAsAction="always"/>
+    <item android:id="@+id/delete" android:icon="@drawable/delete_fill0_wght400_grad0_opsz25" android:title="Delete" app:showAsAction="always"/>
     <item android:id="@+id/favorite" android:icon="@drawable/bookmark_add_fill0_wght400_grad0_opsz24" android:title="Favorite" app:showAsAction="always"/>
     <item android:id="@+id/save" android:icon="@drawable/done_fill0_wght400_grad0_opsz24" android:title="Save" app:showAsAction="always"/>
 </menu>

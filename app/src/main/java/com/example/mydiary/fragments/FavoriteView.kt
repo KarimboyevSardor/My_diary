@@ -43,6 +43,7 @@ class FavoriteView : Fragment() {
                     val fm = AddEditDiary()
                     val bundle = Bundle()
                     bundle.putParcelable("diary", diary)
+                    bundle.putString("pack", diary.pack_name)
                     fm.arguments = bundle
                     findNavController().navigate(R.id.action_main_to_addEditDiary, bundle)
                 }

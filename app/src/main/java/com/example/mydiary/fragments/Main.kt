@@ -5,10 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.viewpager2.widget.ViewPager2
 import com.example.mydiary.R
 import com.example.mydiary.adapters.ViewPagerAdapter
 import com.example.mydiary.databinding.FragmentMainBinding
+import com.example.mydiary.db.MyDb
+import com.example.mydiary.objects.MyObject
 import com.google.android.material.tabs.TabLayout
 
 private const val ARG_PARAM1 = "param1"
@@ -27,11 +30,19 @@ class Main : Fragment() {
     }
 
     private var binding: FragmentMainBinding? = null
+    private var name: String? = null
+    lateinit var myDb:MyDb
     lateinit var viewPagerAdapter: ViewPagerAdapter
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentMainBinding.inflate(inflater, container, false)
 
         binding!!.apply {
+            val viewModel = MyObject.getViewModel(requireActivity())
+            myDb = MyDb(requireContext())
+            MyObject.diaryList = myDb.getDiary()
+            MyObject.folderNameList = myDb.getPack()
+            viewModel.diaryLiveData!!.value = MyObject.diaryList
+            viewModel.folderNameLiveData!!.value = MyObject.folderNameList
             tablayout.addTab(tablayout.newTab().setText("All diary").setIcon(R.drawable.menu_book_fill0_wght400_grad0_opsz24))
             tablayout.addTab(tablayout.newTab().setText("Favorite diary").setIcon(R.drawable.collections_bookmark_fill0_wght400_grad0_opsz24))
             tablayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
@@ -71,5 +82,12 @@ class Main : Fragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
+    }
+    private fun onBackPressed() {
+        requireActivity().onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                requireActivity().finish()
+            }
+        })
     }
 }
