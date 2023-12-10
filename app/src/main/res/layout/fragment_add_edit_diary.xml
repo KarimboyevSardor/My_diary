@@ -28,7 +28,8 @@
             android:id="@+id/name_et"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
             android:background="@drawable/edit_text_background"
             android:hint="Name"
             android:textSize="25sp"
@@ -37,16 +38,17 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="Time"
-            android:id="@+id/create_time_tv"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            android:id="@+id/time"
             android:textSize="17sp" />
 
         <EditText
             android:id="@+id/about_et"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
             android:background="@drawable/edit_text_background"
             android:hint="About"
             android:textSize="20sp"

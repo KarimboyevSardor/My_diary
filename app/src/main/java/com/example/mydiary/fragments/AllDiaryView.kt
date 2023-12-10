@@ -48,16 +48,12 @@ class AllDiaryView : Fragment() {
             var folderName = param1
             myDb = MyDb(requireContext())
             val viewModel = getViewModel(requireActivity())
-            diaryList = myDb.getDiary()
-            folderNameList = myDb.getPack()
-            viewModel.diaryLiveData!!.value = diaryList
-            viewModel.folderNameLiveData!!.value = folderNameList
             if (viewModel.getFolderName()!!.value != null) {
                 folderName = viewModel.getFolderName()!!.value
             } else {
                 folderName = "All"
             }
-            diaryAdapter = DiaryAdapter(diaryList, object : DiaryAdapter.onClick{
+            diaryAdapter = DiaryAdapter(diaryList.filter { it.deleted == 0 } as MutableList<Diary>, object : DiaryAdapter.onClick{
                 override fun onItemClick(diary: Diary) {
                     val fm = AddEditDiary()
                     val bundle = Bundle()
@@ -69,24 +65,24 @@ class AllDiaryView : Fragment() {
             })
             viewModel.getFolderName()!!.observe(requireActivity()) {it1->
                 if (it1 != "All") {
-                    diaryAdapter.filter(diaryList.filter { it.pack_name == it1 } as MutableList<Diary>)
+                    diaryAdapter.filter(diaryList.filter { it.pack_name == it1 && it.deleted == 0} as MutableList<Diary>)
                 } else {
-                    diaryAdapter.filter(diaryList)
+                    diaryAdapter.filter(diaryList.filter { it.deleted == 0 } as MutableList<Diary>)
                 }
                 folderName = it1
             }
             diaryRec.adapter = diaryAdapter
 
-            folderAdapter = FolderAdapter(folderNameList, object : FolderAdapter.onClick{
+            folderAdapter = FolderAdapter(folderNameList.filter { it.deleted == 0 } as MutableList<Folder>, object : FolderAdapter.onClick{
                 override fun onItemClick(folder: Folder) {
                     folderName = folder.name.toString()
                     viewModel.getDiary()!!.observe(requireActivity()) {
                         if (folderName != "All") {
                             deleteFolerBtn.visibility = View.VISIBLE
-                            diaryAdapter.filter(it.filter { it.pack_name == folder.name } as MutableList<Diary>)
+                            diaryAdapter.filter(it.filter { it.pack_name == folder.name && it.deleted == 0} as MutableList<Diary>)
                         } else {
                             deleteFolerBtn.visibility = View.INVISIBLE
-                            diaryAdapter.filter(it)
+                            diaryAdapter.filter(it.filter { it.deleted == 0 } as MutableList<Diary>)
                         }
                     }
                 }
@@ -96,16 +92,16 @@ class AllDiaryView : Fragment() {
             folderRec.adapter = folderAdapter
             if (folderName != "All") {
                 viewModel.getDiary()!!.observe(requireActivity()) { it ->
-                    diaryAdapter.filter(it.filter { it.pack_name == folderName } as MutableList<Diary>)
+                    diaryAdapter.filter(it.filter { it.pack_name == folderName && it.deleted == 0 } as MutableList<Diary>)
                 }
             } else {
                 viewModel.getDiary()!!.observe(requireActivity()) { it ->
-                    diaryAdapter.filter(it)
+                    diaryAdapter.filter(it.filter { it.deleted == 0 } as MutableList<Diary>)
                 }
             }
 
             viewModel.getPackName()!!.observe(requireActivity()) {
-                folderAdapter.filter(it)
+                folderAdapter.filter(it.filter { it.deleted == 0 } as MutableList<Folder>)
             }
             folderBtn.setOnClickListener {
                 findNavController().navigate(R.id.action_main_to_folders)
@@ -123,9 +119,9 @@ class AllDiaryView : Fragment() {
                 androidx.appcompat.widget.SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     val filtList = mutableListOf<Diary>()
-                    for (i in 0 until diaryList.size) {
-                        if (diaryList[i].name!!.toLowerCase().contains(query!!.toLowerCase()) || diaryList[i].about!!.toLowerCase().contains(query.toLowerCase())) {
-                            filtList.add(diaryList[i])
+                    for (i in 0 until diaryList.filter { it.deleted == 0 }.size) {
+                        if (diaryList.filter { it.deleted == 0 }[i].name!!.toLowerCase().contains(query!!.toLowerCase()) || diaryList.filter { it.deleted == 0}[i].about!!.toLowerCase().contains(query.toLowerCase())) {
+                            filtList.add(diaryList.filter { it.deleted == 0 }[i])
                         }
                     }
                     if (query != "") {
@@ -136,9 +132,9 @@ class AllDiaryView : Fragment() {
 
                 override fun onQueryTextChange(newText: String?): Boolean {
                     val filtList = mutableListOf<Diary>()
-                    for (i in 0 until diaryList.size) {
-                        if (diaryList[i].name!!.toLowerCase().contains(newText!!.toLowerCase()) || diaryList[i].about!!.toLowerCase().contains(newText.toLowerCase())) {
-                            filtList.add(diaryList[i])
+                    for (i in 0 until diaryList.filter { it.deleted == 0 }.size) {
+                        if (diaryList.filter { it.deleted == 0 }[i].name!!.toLowerCase().contains(newText!!.toLowerCase()) || diaryList.filter { it.deleted == 0 }[i].about!!.toLowerCase().contains(newText.toLowerCase())) {
+                            filtList.add(diaryList.filter { it.deleted == 0 }[i])
                         }
                     }
                     if (newText != "") {
@@ -156,8 +152,13 @@ class AllDiaryView : Fragment() {
     }
 
     private fun deleteFoler(name: String) {
+        val viewModel = getViewModel(requireActivity())
         val myDb = MyDb(requireContext())
-
+        myDb.deletePack(Folder(name = name, deleted = 1))
+        diaryList = myDb.getDiary()
+        viewModel.diaryLiveData!!.value = diaryList
+        folderNameList = myDb.getPack()
+        viewModel.folderNameLiveData!!.value = folderNameList
     }
 
     companion object {

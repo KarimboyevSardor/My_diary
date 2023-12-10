@@ -115,12 +115,16 @@ class MyDb(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSI
         val contentValues = ContentValues()
         contentValues.put(DIARY_FOLDER_NAME, folder.name)
         this.writableDatabase.update(TABLE_DIARY, contentValues, "$DIARY_FOLDER_NAME = ?", arrayOf(oldName))
-        this.writableDatabase.update(TABLE_FOLDERS, content, "$ID = ?", arrayOf(folder.id.toString()))
+        this.writableDatabase.update(TABLE_FOLDERS, content, "$FOLDER_NAME = ?", arrayOf(folder.name))
     }
 
     override fun deletePack(folder: Folder) {
-        this.writableDatabase.delete(TABLE_DIARY, "$DIARY_FOLDER_NAME = ?", arrayOf(folder.name))
-        this.writableDatabase.delete(TABLE_FOLDERS, "$FOLDER_NAME = ?", arrayOf(folder.name))
+        val content = ContentValues()
+        content.put(FOLDER_DELETED, folder.deleted)
+        val contentValues = ContentValues()
+        contentValues.put(DIARY_DELETED, 1)
+        this.writableDatabase.update(TABLE_DIARY, contentValues, "$DIARY_FOLDER_NAME = ?", arrayOf(folder.name))
+        this.writableDatabase.update(TABLE_FOLDERS, content, "$FOLDER_NAME = ?", arrayOf(folder.name))
     }
 
 }

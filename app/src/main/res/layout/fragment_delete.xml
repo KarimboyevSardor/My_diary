@@ -3,7 +3,66 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.Delete">
 
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/toolbar"
+        android:background="#FF44"
+        app:title="Deleted data"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        android:text="Here, your data is stored for 30 days and deleted after 30 days. Press and hold data to return or delete them."
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:textSize="17sp"
+        android:textStyle="normal"
+        android:textAlignment="center"
+        android:id="@+id/tv"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@+id/tv"
+        android:layout_marginTop="10dp"
+        app:layout_constraintBottom_toTopOf="@id/linear"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/diary_item"
+        android:id="@+id/delete_diary_rec"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/linear"
+        >
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:id="@+id/delete_return"
+            android:src="@drawable/keyboard_return_fill0_wght400_grad0_opsz24"
+            android:background="@android:color/transparent"
+            android:layout_margin="10dp"
+            />
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:id="@+id/delete"
+            android:src="@drawable/delete_fill0_wght400_grad0_opsz26"
+            android:background="@android:color/transparent"
+            android:layout_margin="10dp"
+            />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,13 +12,23 @@ class MyViewModel : ViewModel() {
     var diaryLiveData: MutableLiveData<MutableList<Diary>>? = null
     var folderNameLiveData: MutableLiveData<MutableList<Folder>>? = null
     var folderNameLiveData1: MutableLiveData<String>? = null
+    var chooseDeleteItem1: MutableLiveData<Boolean>? = null
 
     init {
         folderNameLiveData1 = MutableLiveData()
+        chooseDeleteItem1 = MutableLiveData()
         diaryLiveData = MutableLiveData()
         diaryLiveData?.value = diaryList
         folderNameLiveData = MutableLiveData()
         folderNameLiveData?.value = folderNameList
+    }
+
+    fun addChooseDeleteItem(show: Boolean) {
+        chooseDeleteItem1!!.value = show
+    }
+
+    fun getChooseDeleteItem() : MutableLiveData<Boolean>? {
+        return chooseDeleteItem1!!
     }
 
     fun addFolderName(name: String) {

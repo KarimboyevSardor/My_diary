@@ -5,11 +5,16 @@ import android.app.Dialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.navigateUp
 import com.example.mydiary.R
 import com.example.mydiary.adapters.FoldersAdapter
 import com.example.mydiary.databinding.AddFolerDialogBinding
@@ -42,7 +47,11 @@ class Folders : Fragment() {
 
         binding!!.apply {
             val viewModel = getViewModel(requireActivity())
-            foldersAdapter = FoldersAdapter(folderNameList, object : FoldersAdapter.ItemOnClick{
+            val activity = activity as AppCompatActivity
+            activity.setSupportActionBar(toolbar)
+            activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+            setHasOptionsMenu(true)
+            foldersAdapter = FoldersAdapter(folderNameList.filter { it.deleted == 0 } as MutableList<Folder>, object : FoldersAdapter.ItemOnClick{
                 override fun onClickItem(folder: Folder) {
                     viewModel.addFolderName(folder.name.toString())
                     findNavController().navigateUp()
@@ -53,11 +62,31 @@ class Folders : Fragment() {
                 setDialog()
             }
             viewModel.getPackName()!!.observe(requireActivity()) {
-                foldersAdapter.filter(it)
+                foldersAdapter.filter(it.filter { it.deleted == 0 } as MutableList<Folder>)
             }
+
         }
 
         return binding!!.root
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.folders_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                findNavController().navigateUp()
+            }
+            R.id.delete_btn -> {
+                findNavController().navigate(R.id.action_folders_to_delete)
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun setDialog() {
@@ -73,17 +102,23 @@ class Folders : Fragment() {
             addBtn.setOnClickListener {
                 val name = addFolderEt.text.toString()
                 if (name.isNotEmpty()) {
-                    if (folderNameList.none { it.name == name }) {
+                    if (folderNameList.filter { it.name == name }.isNotEmpty())  {
+                        if (folderNameList.filter { it.name == name }.filter { it.deleted == 1 }.isNotEmpty()) {
+                            myDb.updatePack(Folder(name = name, deleted = 0), name)
+                            folderNameList = myDb.getPack()
+                            viewModel.folderNameLiveData!!.value = folderNameList
+                            dialog.dismiss()
+                        } else if (folderNameList.filter { it.name == name }.filter { it.deleted == 0 }.isNotEmpty()){
+                            Toast.makeText(requireContext(), "There is a folder with this name", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
                         myDb.addPack(Folder(name = name, deleted = 0))
                         folderNameList.add(Folder(name = name, deleted = 0))
                         viewModel.folderNameLiveData!!.value = folderNameList
-                        Toast.makeText(requireContext(), "Added folder $name", Toast.LENGTH_SHORT).show()
                         dialog.dismiss()
-                    } else {
-                        Toast.makeText(requireContext(), "Such a folder exists", Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    Toast.makeText(requireContext(), "Please do not leave a space", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "The name is incomplete", Toast.LENGTH_SHORT).show()
                 }
             }
         }

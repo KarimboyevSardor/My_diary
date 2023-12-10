@@ -12,37 +12,53 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:layout_margin="10dp"
         >
-        <TextView
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Name"
-            android:textStyle="bold"
-            android:textSize="20sp"
-            android:id="@+id/name_tv"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="10dp"
-            />
-        <TextView
-            android:layout_marginTop="20dp"
-            android:layout_marginStart="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/about_tv"
-            android:textSize="17sp"
-            android:text="About"
-            android:maxLines="1"
-            />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/createTime_tv"
-            android:text="Created time"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="20dp"
-            android:textSize="15sp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Name"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:id="@+id/name_tv"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
+                />
+            <TextView
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/about_tv"
+                android:textSize="17sp"
+                android:text="About"
+                android:maxLines="1"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/createTime_tv"
+                android:text="Created time"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
+                android:textSize="15sp"
+                />
+        </LinearLayout>
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.1"
+            android:id="@+id/radio_btn"
+            android:visibility="gone"
+            android:button="@drawable/check_box_button"
+            android:clickable="false"
             />
     </LinearLayout>
 

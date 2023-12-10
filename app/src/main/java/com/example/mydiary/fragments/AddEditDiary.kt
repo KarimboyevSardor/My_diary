@@ -24,6 +24,7 @@ import com.example.mydiary.models.Diary
 import com.example.mydiary.objects.MyObject.diaryList
 import com.example.mydiary.objects.MyObject.getViewModel
 import com.example.mydiary.viewmodel.MyViewModel
+import java.util.Calendar
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -44,12 +45,20 @@ class AddEditDiary : Fragment() {
     private var diary: Diary? = null
     lateinit var viewModel: MyViewModel
     private var binding: FragmentAddEditDiaryBinding? = null
+    lateinit var time1: String
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
         binding = FragmentAddEditDiaryBinding.inflate(inflater, container, false)
-
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val minut = calendar.get(Calendar.MINUTE)
+        val second = calendar.get(Calendar.SECOND)
+        Log.d("AddDiary", "$year.$month.$day | $hour:$minut:$second")
         viewModel = getViewModel(requireActivity())
         binding!!.apply {
             diary = arguments?.getParcelable("diary")!!
@@ -59,10 +68,14 @@ class AddEditDiary : Fragment() {
             activity.setSupportActionBar(toolbar)
             activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
             setHasOptionsMenu(true)
-            if (diary != null) {
+            if (diary!!.pack_name!!.isNotEmpty()) {
                 aboutEt.setText(diary!!.about)
                 nameEt.setText(diary!!.name)
-                createTimeTv.text = diary!!.deleted_time
+                time.text = diary!!.deleted_time
+                time1 = diary!!.deleted_time.toString()
+            } else {
+                time1 = "$year.$month.$day | $hour:$minut:$second"
+                time.text = time1
             }
         }
 
@@ -109,13 +122,15 @@ class AddEditDiary : Fragment() {
                 addDiary(
                     binding!!.nameEt,
                     binding!!.aboutEt,
-                    binding!!.createTimeTv,
+                    binding!!.time,
                     folderName!!
                 )
                 Toast.makeText(requireContext(), "Save diary", Toast.LENGTH_SHORT).show()
+                viewModel.addFolderName("All")
                 findNavController().navigateUp()
             }
             android.R.id.home -> {
+                viewModel.addFolderName(diary!!.pack_name!!)
                 findNavController().navigateUp()
             }
             R.id.background -> {
@@ -124,15 +139,17 @@ class AddEditDiary : Fragment() {
             R.id.delete -> {
                 deleteDiary()
                 Toast.makeText(requireContext(), "Deleted", Toast.LENGTH_SHORT).show()
+                viewModel.addFolderName(diary!!.pack_name!!)
                 findNavController().navigateUp()
             }
             R.id.save -> {
                 updateDiary(
                     binding!!.nameEt,
                     binding!!.aboutEt,
-                    binding!!.createTimeTv,
+                    binding!!.time,
                     folderName!!
                 )
+                viewModel.addFolderName(diary!!.pack_name!!)
                 findNavController().navigateUp()
             }
             R.id.favorite -> {
@@ -141,7 +158,7 @@ class AddEditDiary : Fragment() {
                     removeFavorite(
                         binding!!.nameEt,
                         binding!!.aboutEt,
-                        binding!!.createTimeTv,
+                        binding!!.time,
                         folderName!!
                     )
                     Toast.makeText(requireContext(), "Removed favorite", Toast.LENGTH_SHORT).show()
@@ -150,7 +167,7 @@ class AddEditDiary : Fragment() {
                     addFavorite(
                         binding!!.nameEt,
                         binding!!.aboutEt,
-                        binding!!.createTimeTv,
+                        binding!!.time,
                         folderName!!
                     )
                     Toast.makeText(requireContext(), "Added favorite", Toast.LENGTH_SHORT).show()
@@ -217,7 +234,9 @@ class AddEditDiary : Fragment() {
 
     private fun deleteDiary() {
         val db = MyDb(requireContext())
-        db.deletedDiary(diary!!)
+        diary!!.deleted = 1
+        diary!!.deleted_time = "$time1\nRemaining time: 30"
+        db.updateDiary(diary!!)
         diaryList.remove(diary)
         viewModel.diaryLiveData!!.value  = diaryList
     }
